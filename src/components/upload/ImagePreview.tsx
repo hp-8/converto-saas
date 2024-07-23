@@ -1,0 +1,38 @@
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+
+interface ImagePreviewProps {
+  file: File;
+}
+
+const ImagePreview = ({ file }: ImagePreviewProps) => {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      //   console.log("previewurl", reader.result);
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  }, [file]);
+
+  return (
+    <div className="flex flex-col items-center m-2 h-60">
+      {previewUrl ? (
+          <Image
+            src={previewUrl}
+            alt={file.name}
+            width={200}
+            height={200}
+            className="object-cover rounded-sm border-black"
+          />
+      ) : (
+        <div className="w-24 h-24 bg-gray-200 animate-pulse" />
+      )}
+      <p className="text-sm mt-2">{file.name.length > 12 ? file.name.substring(0,12) + '...' : file.name}</p>
+    </div>
+  );
+};
+
+export default ImagePreview;
